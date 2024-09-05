@@ -1,1 +1,1 @@
-nextflow run ChIPipe.1.0.0.nf -profile conda -c merge.config
+nextflow run ChIPipe.1.0.9.SE.nf -profile conda -c merge.config
