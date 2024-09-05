@@ -80,7 +80,7 @@ process HISAT2_ALIGN {
 
     script:
     """
-    hisat2 -p ${task.cpus} -x ${params.genome_index} -1 ${reads[0]} -2 ${reads[1]} | \
+    hisat2 -p ${task.cpus} --no-spliced-alignment -x ${params.genome_index} -1 ${reads[0]} -2 ${reads[1]} | \
     samtools view -@ ${task.cpus} -bS - | \
     samtools sort -@ ${task.cpus} -o ${sample_id}.bam
     """
