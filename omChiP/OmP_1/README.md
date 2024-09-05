@@ -29,19 +29,9 @@ bash <conda-installer-name>-latest-Linux-x86_64.sh
 ## Usage
 Run the pipeline with:
 ```bash
-nextflow run ChIPipe.1.0.9.SE.nf --reads "*.fastq.gz" --outdir "results" --genome "path/to/genome.fa" --genome_index "path/to/genome_index"
+nextflow run ChIPipe.1.0.9.SE.nf -profile conda -c merge.config
 ```
 
 ## Parameters
-- `--reads`: Pattern matching the input FASTQ files.
-- `--outdir`: Directory for output results.
-- `--genome`: Reference genome file.
-- `--genome_index`: Genome index directory.
+- `--merge.config`: Path to the merge.config file, used to specify how to merge replicates.
 
-## Example
-```bash
-nextflow run ChIPipe.1.0.9.SE.nf --reads "data/*.fastq.gz" --outdir "analysis/results" --genome "reference/mm10.fa" --genome_index "reference/mm10_index"
-```
-
-## License
-Specify the license under which the project is distributed.
