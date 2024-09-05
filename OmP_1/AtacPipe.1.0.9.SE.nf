@@ -41,7 +41,7 @@ process TRIMMOMATIC {
 
     script:
     """
-    trimmomatic SE -threads ${task.cpus} -phred33 \
+    TrimmomaticSE -threads ${task.cpus} -phred33 \
         ${reads} \
         ${sample_id}_trimmed.fastq.gz \
         SLIDINGWINDOW:4:18 \
