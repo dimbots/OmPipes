@@ -23,7 +23,7 @@ curl -s https://get.nextflow.io | bash
 
 Install Conda dependencies:
 ```bash
-conda install -c bioconda fastqc trimmomatic
+bash <conda-installer-name>-latest-Linux-x86_64.sh
 ```
 
 ## Usage
