@@ -1,8 +1,8 @@
 
-# ChIPipe - A ChIP-seq Data Processing Pipeline
+# ChIP-ATAC Data Processing Pipeline
 
 ## Description
-ChIPipe is a bioinformatics pipeline designed for the analysis of ChIP-seq data. It automates the quality control, read trimming, alignment, and peak calling processes, leveraging powerful tools such as FastQC, Trimmomatic, HISAT2, and MACS2.
+ChIPipe and AtacPipe is bioinformatics pipelines designed for the analysis of ChIP-seq and ATAC-seq data. It automates the quality control, read trimming, alignment, and peak calling processes, leveraging powerful tools such as FastQC, Trimmomatic, HISAT2, MACS2 and Deeptools.
 
 ## Features
 - Quality control with FastQC.
