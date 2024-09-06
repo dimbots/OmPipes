@@ -1,6 +1,3 @@
-Apologies, I misunderstood your previous request. Here is the updated README.md file with the instructions for running the script as an R script:
-
-```markdown
 # ChIP and ATAC Data Processing Pipelines
 
 ## Description
