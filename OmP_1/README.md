@@ -47,14 +47,3 @@ This suite of bioinformatics pipelines is designed for ChIP-seq and ATAC-seq dat
   ```
 - Replace `.SE.nf` with `.PE.nf` for paired-end data processing.
 
-## Contributing
-Contributions are what make the open-source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
-
-## License
-Distributed under the MIT License. See `LICENSE` for more information.
-
-## Contact
-Your Name - [Your Email](mailto:your.email@example.com)
-
-## Acknowledgments
-- Thanks to those who have contributed to refining these pipelines.
