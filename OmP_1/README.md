@@ -1,3 +1,6 @@
+Apologies, I misunderstood your previous request. Here is the updated README.md file with the instructions for running the script as an R script:
+
+```markdown
 # ChIP and ATAC Data Processing Pipelines
 
 ## Description
@@ -47,9 +50,17 @@ This suite of bioinformatics pipelines is designed for ChIP-seq and ATAC-seq dat
   ```
 - Replace `.SE.nf` with `.PE.nf` for paired-end data processing.
 
+To run the factorial calculation script as an R script, save the script to a file (e.g., "ReadCount.R") and execute the following command in your terminal:
+
+```
+Rscript ReadCount.R
+```
+
 ## Output
 In addition to the standard pipeline outputs, the pipelines now generate:
 - A stacked bar plot (`read_count_comparison.png`) comparing the number of reads in original FASTQ files to filtered BAM files.
 - A CSV file (`read_counts.csv`) containing the read count data.
 
 These files can be found in the `results/read_counts` directory after pipeline execution.
+```
+
