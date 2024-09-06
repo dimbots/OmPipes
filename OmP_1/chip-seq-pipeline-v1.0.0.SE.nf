@@ -2,7 +2,7 @@
 
 nextflow.enable.dsl=2
 
-params.reads = "*{r1,r2}.fastq.gz"
+params.reads = "*.fastq.gz"
 params.outdir = "results"
 params.genome = "/media/dimbo/10T/TAL_LAB/Genomes/hisat_index/mm10.fa"
 params.genome_index = "/media/dimbo/10T/TAL_LAB/Genomes/hisat_index/mm10"
@@ -35,14 +35,13 @@ process TRIMMOMATIC {
     tuple val(sample_id), path(reads)
 
     output:
-    tuple val(sample_id), path("${sample_id}_r{1,2}_trimmed.fastq.gz"), emit: trimmed_reads
+    tuple val(sample_id), path("${sample_id}_trimmed.fastq.gz"), emit: trimmed_reads
 
     script:
     """
-    TrimmomaticPE -threads ${task.cpus} -phred33 \
-        ${reads[0]} ${reads[1]} \
-        ${sample_id}_r1_trimmed.fastq.gz ${sample_id}_r1_unpaired.fastq.gz \
-        ${sample_id}_r2_trimmed.fastq.gz ${sample_id}_r2_unpaired.fastq.gz \
+    TrimmomaticSE -threads ${task.cpus} -phred33 \
+        ${reads} \
+        ${sample_id}_trimmed.fastq.gz \
         SLIDINGWINDOW:4:18 \
         LEADING:28 \
         TRAILING:28 \
@@ -80,26 +79,9 @@ process HISAT2_ALIGN {
 
     script:
     """
-    hisat2 -p ${task.cpus} --no-spliced-alignment -x ${params.genome_index} -1 ${reads[0]} -2 ${reads[1]} | \
+    hisat2 -p ${task.cpus} --no-spliced-alignment -x ${params.genome_index} -U ${reads} | \
     samtools view -@ ${task.cpus} -bS - | \
     samtools sort -@ ${task.cpus} -o ${sample_id}.bam
-    """
-}
-
-process MERGE_BAM {
-    tag "$group_id"
-    publishDir "${params.outdir}/merged", mode: 'copy'
-    conda "bioconda::samtools=1.15"
-
-    input:
-    tuple val(group_id), path(bams)
-
-    output:
-    tuple val(group_id), path("${group_id}_merged.bam"), emit: merged_bam
-
-    script:
-    """
-    samtools merge -@ ${task.cpus} ${group_id}_merged.bam ${bams}
     """
 }
 
@@ -134,6 +116,23 @@ process SAMTOOLS_FILTER {
     script:
     """
     samtools view -@ ${task.cpus} -bh -q 30 -F 1024 ${bam} > ${sample_id}.filtered.bam
+    """
+}
+
+process MERGE_BAM {
+    tag "$group_id"
+    publishDir "${params.outdir}/merged", mode: 'copy'
+    conda "bioconda::samtools=1.15"
+
+    input:
+    tuple val(group_id), path(bams)
+
+    output:
+    tuple val(group_id), path("${group_id}.bam"), emit: merged_bam
+
+    script:
+    """
+    samtools merge -@ ${task.cpus} ${group_id}.bam ${bams}
     """
 }
 
@@ -175,7 +174,7 @@ process DOWNSAMPLE_BAM {
 
 process SAMTOOLS_INDEX {
     tag "$sample_id"
-    publishDir "${params.outdir}/downsampled", mode: 'copy'
+    publishDir "${params.outdir}/indexed", mode: 'copy'
     conda "bioconda::samtools=1.15"
 
     input:
@@ -222,59 +221,62 @@ process MACS2_CALLPEAK {
     script:
     """
     macs2 callpeak --treatment ${bam} \
-                   --format BAMPE \
+                   --format BAM \
                    --gsize ${params.gsize} \
                    -n ${sample_id}_peaks \
                    -p 0.0000000000001
+
+    # Ensure the output file exists with the expected name
+    if [ -f "${sample_id}_peaks_peaks.narrowPeak" ]; then
+        echo "Peak file found with expected name"
+    elif [ -f "${sample_id}_peaks.narrowPeak" ]; then
+        mv "${sample_id}_peaks.narrowPeak" "${sample_id}_peaks_peaks.narrowPeak"
+        echo "Peak file renamed to match expected output"
+    else
+        echo "Peak file not found" >&2
+        exit 1
+    fi
     """
+
 }
 
 workflow {
     Channel
-        .fromFilePairs(params.reads, checkIfExists: true)
-        .set { read_pairs_ch }
+        .fromPath(params.reads)
+        .map { file -> tuple(file.simpleName, file) }
+        .set { read_ch }
 
-    FASTQC_RAW(read_pairs_ch)
-    trimmed_reads = TRIMMOMATIC(read_pairs_ch)
+    FASTQC_RAW(read_ch)
+    trimmed_reads = TRIMMOMATIC(read_ch)
     FASTQC_TRIMMED(trimmed_reads)
     
     aligned_reads = HISAT2_ALIGN(trimmed_reads)
-
-    // Prepare channel for merging
-    aligned_reads_for_merge = aligned_reads
-        .map { sample_id, bam -> 
-            def group = params.merge_groups.find { group, samples -> samples.contains(sample_id) }
-            group ? tuple(group.key, sample_id, bam) : tuple(sample_id, sample_id, bam)
-        }
-        .groupTuple(by: 0)
-        .map { group_id, sample_ids, bams -> tuple(group_id, bams) }
-
-    // Merge BAM files if necessary
-    merged_reads = aligned_reads_for_merge
-        .branch {
-            to_merge: it[1].size() > 1
-            single: it[1].size() == 1
-        }
-
-    merged_reads.to_merge | MERGE_BAM
-    
-    // Combine merged and single BAM files
-    all_bams = merged_reads.single.map { id, bam -> tuple(id, bam[0]) }
-        .mix(MERGE_BAM.out.merged_bam)
-
-    rmdup_reads = SAMTOOLS_RMDUP(all_bams)
+    rmdup_reads = SAMTOOLS_RMDUP(aligned_reads)
     filtered_reads = SAMTOOLS_FILTER(rmdup_reads)
     
-    // Count reads in each filtered sample
-    read_counts = COUNT_READS(filtered_reads)
+    // Prepare channel for merging
+    reads_for_merge = filtered_reads
+        .map { sample_id, bam -> 
+            def group = params.merge_groups.find { group, samples -> samples.contains(sample_id) }
+            group ? tuple(group.key, bam) : tuple(sample_id, bam)
+        }
+        .groupTuple()
+
+    // Merge BAM files
+    merged_reads = MERGE_BAM(reads_for_merge)
+
+    // Continue analysis only with merged files
     
-    // Find the minimum read count across all samples
+    // Count reads in merged samples
+    read_counts = COUNT_READS(merged_reads)
+    
+    // Find the minimum read count across merged samples
     min_reads = read_counts
         .map { it[1].toLong() }
         .min()
     
-    // Downsample all samples to the minimum read count
-    downsampled_reads = DOWNSAMPLE_BAM(filtered_reads, min_reads)
+    // Downsample merged samples to the minimum read count
+    downsampled_reads = DOWNSAMPLE_BAM(merged_reads, min_reads)
 
     // Index the downsampled BAM files
     indexed_reads = SAMTOOLS_INDEX(downsampled_reads)

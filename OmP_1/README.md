@@ -9,7 +9,7 @@ ChIPipe and AtacPipe is bioinformatics pipelines designed for the analysis of Ch
 - Read trimming using Trimmomatic.
 - Flexible alignment options with HISAT2.
 - Peak calling with MACS2.
-
+- TSS plot with Deeptools
 ## Prerequisites
 - [Nextflow](https://www.nextflow.io/) installed.
 - [Conda](https://docs.conda.io/en/latest/) for managing dependencies.
@@ -29,7 +29,7 @@ bash <conda-installer-name>-latest-Linux-x86_64.sh
 ## Usage
 Run the pipeline with:
 ```bash
-nextflow run ChIPipe.1.0.9.SE.nf -profile conda -c merge.config
+nextflow run ChiPipe.1.0.9.SE.nf --profile conda -c merge.config
 ```
 
 ## Parameters

@@ -1,1 +1,1 @@
-nextflow run ChIPipe.1.0.9.SE.nf -profile conda -c merge.config
+nextflow run chip-seq-pipeline-v1.0.0.SE.nf --profile conda -c merge.config
