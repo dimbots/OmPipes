@@ -1,3 +1,4 @@
+
 # ChIP and ATAC Data Processing Pipelines
 
 ## Description
@@ -9,7 +10,6 @@ This suite of bioinformatics pipelines is designed for ChIP-seq and ATAC-seq dat
 - **Alignment**: Utilizes HISAT2, set to avoid spliced alignments, suitable for ChIP-seq and ATAC-seq data.
 - **Peak Calling**: Applies MACS2 for detecting enriched regions effectively.
 - **Visualization**: Converts BAM files to BigWig format with deepTools for easy visualization of read coverage.
-- **Read Counting and Plotting**: Compares read counts between original FASTQ files and filtered BAM files, generating informative plots.
 
 ## ChIP-seq Specific Steps
 - **Duplicate Removal**: Removes duplicates using Samtools to avoid overrepresentation of any region.
@@ -47,9 +47,3 @@ This suite of bioinformatics pipelines is designed for ChIP-seq and ATAC-seq dat
   ```
 - Replace `.SE.nf` with `.PE.nf` for paired-end data processing.
 
-## Output
-In addition to the standard pipeline outputs, the pipelines now generate:
-- A stacked bar plot (`read_count_comparison.png`) comparing the number of reads in original FASTQ files to filtered BAM files.
-- A CSV file (`read_counts.csv`) containing the read count data.
-
-These files can be found in the `results/read_counts` directory after pipeline execution.
