@@ -1,37 +1,60 @@
 
-# ChIP-ATAC Data Processing Pipeline
+# ChIP and ATAC Data Processing Pipelines
 
 ## Description
-ChIPipe and AtacPipe is bioinformatics pipelines designed for the analysis of ChIP-seq and ATAC-seq data. It automates the quality control, read trimming, alignment, and peak calling processes, leveraging powerful tools such as FastQC, Trimmomatic, HISAT2, MACS2 and Deeptools.
+This suite of bioinformatics pipelines is designed for ChIP-seq and ATAC-seq data analysis. It streamlines quality control, read trimming, alignment, peak calling, and visualization, utilizing tools like FastQC, Trimmomatic, HISAT2, MACS2, and deepTools.
 
 ## Features
-- Quality control with FastQC.
-- Read trimming using Trimmomatic.
-- Flexible alignment options with HISAT2.
-- Peak calling with MACS2.
-- TSS plot with Deeptools
+- **Quality Control**: Uses FastQC for assessing the quality of raw and trimmed reads.
+- **Read Trimming**: Employs Trimmomatic for adapter and quality trimming.
+- **Alignment**: Utilizes HISAT2, set to avoid spliced alignments, suitable for ChIP-seq and ATAC-seq data.
+- **Peak Calling**: Applies MACS2 for detecting enriched regions effectively.
+- **Visualization**: Converts BAM files to BigWig format with deepTools for easy visualization of read coverage.
+
+## ChIP-seq Specific Steps
+- **Duplicate Removal**: Removes duplicates using Samtools to avoid overrepresentation of any region.
+- **Quality Filtering**: Filters reads based on quality metrics to ensure data integrity.
+- **Merging of BAM Files**: Combines multiple BAM files for comprehensive analysis.
+- **Downsampling**: Ensures uniform read depth across samples for consistent peak calling.
+
+## ATAC-seq Specific Steps
+- **Mitochondrial Read Filtering**: Excludes mitochondrial DNA to prevent biases in the analysis.
+- **Read Shifting**: Adjusts reads to represent transposase cut sites accurately, crucial for ATAC-seq.
+- **Downsampling**: Standardizes read depth to minimize batch effects during peak calling.
+
 ## Prerequisites
-- [Nextflow](https://www.nextflow.io/) installed.
-- [Conda](https://docs.conda.io/en/latest/) for managing dependencies.
-- Reference genome files (FASTA format and indexed).
+- [Nextflow](https://www.nextflow.io/): A workflow tool to run tasks across multiple compute infrastructures in a very portable manner.
+- [Conda](https://docs.conda.io/en/latest/): Package, dependency and environment management for any language—Python, R, Ruby, Lua, Scala, Java, JavaScript, C/ C++, FORTRAN.
 
 ## Installation
-Install Nextflow:
-```bash
-curl -s https://get.nextflow.io | bash
-```
-
-Install Conda dependencies:
-```bash
-bash <conda-installer-name>-latest-Linux-x86_64.sh
-```
+1. **Install Nextflow**:
+   ```bash
+   curl -s https://get.nextflow.io | bash
+   ```
+2. **Install Dependencies with Conda**:
+   ```bash
+   bash <conda-installer-name>-latest-Linux-x86_64.sh
+   ```
 
 ## Usage
-Run the pipeline with:
-```bash
-nextflow run ChiPipe.1.0.9.SE.nf --profile conda -c merge.config
-```
+- **For ChIP-seq**:
+  ```bash
+  nextflow run chip-seq-pipeline-v1.0.0.SE.nf --profile conda -c merge.config
+  ```
+- **For ATAC-seq**:
+  ```bash
+  nextflow run atac-seq-pipeline-v1.0.0.SE.nf --profile conda -c merge.config
+  ```
+- Replace `.SE.nf` with `.PE.nf` for paired-end data processing.
 
-## Parameters
-- `--merge.config`: Path to the merge.config file, used to specify how to merge replicates.
+## Contributing
+Contributions are what make the open-source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
 
+## License
+Distributed under the MIT License. See `LICENSE` for more information.
+
+## Contact
+Your Name - [Your Email](mailto:your.email@example.com)
+
+## Acknowledgments
+- Thanks to those who have contributed to refining these pipelines.
