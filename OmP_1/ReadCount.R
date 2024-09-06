@@ -1,22 +1,5 @@
 #!/usr/bin/env Rscript
 
-# List of required packages
-required_packages <- c("ggplot2", "dplyr", "tidyr")
-
-# Function to check and install packages
-install_if_missing <- function(packages) {
-  for (package in packages) {
-    if (!require(package, character.only = TRUE)) {
-      install.packages(package, repos = "http://cran.us.r-project.org")
-      library(package, character.only = TRUE)
-    }
-  }
-}
-
-# Install necessary packages
-install_if_missing(required_packages)
-
-# Load the libraries
 library(ggplot2)
 library(dplyr)
 library(tidyr)
