@@ -1,4 +1,4 @@
-# ChIP-seq, ATAC-seq, RNA-seq, and Differential Expression Analysis Pipelines
+# ChIP-seq, ATAC-seq, and RNA-seq Analysis Pipelines
 
 ## Description
 This comprehensive suite of bioinformatics pipelines is designed for the end-to-end analysis of ChIP-seq, ATAC-seq, and RNA-seq data. It streamlines the entire workflow, from quality control and read preprocessing to alignment, peak calling, visualization, quantification, and differential expression analysis. The pipelines leverage state-of-the-art tools such as FastQC, Trimmomatic, HISAT2, MACS2, deepTools, featureCounts, and MetaSeqR2 to provide a robust and efficient analysis framework.
