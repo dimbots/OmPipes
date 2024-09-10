@@ -47,8 +47,7 @@ process TRIMMOMATIC {
         ILLUMINACLIP:TruSeq3-PE.fa:2:30:10 \
         SLIDINGWINDOW:4:20 \
         LEADING:3 \
-        TRAILING:3 \
-        MINLEN:36
+        TRAILING:3 
     """
 }
 

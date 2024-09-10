@@ -45,8 +45,7 @@ process TRIMMOMATIC {
         ${sample_id}_r2_trimmed.fastq.gz ${sample_id}_r2_unpaired.fastq.gz \
         SLIDINGWINDOW:4:18 \
         LEADING:28 \
-        TRAILING:28 \
-        MINLEN:70
+        TRAILING:28 
     """
 }
 

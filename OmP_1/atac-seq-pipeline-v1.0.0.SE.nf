@@ -45,8 +45,7 @@ process TRIMMOMATIC {
         ${sample_id}_trimmed.fastq.gz \
         SLIDINGWINDOW:4:18 \
         LEADING:28 \
-        TRAILING:28 \
-        MINLEN:70
+        TRAILING:28 
     """
 }
 
