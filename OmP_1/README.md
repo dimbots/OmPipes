@@ -39,7 +39,7 @@ This comprehensive suite of bioinformatics pipelines is designed for the end-to-
   ```
 - **For RNA-seq**:
   ```bash
-  nextflow run rna-seq-pipeline-v1.2.0.SE.nf --profile conda
+  nextflow run rna-seq-pipeline-v1.2.0.SE.nf --profile conda -c merge.config
   ```
 - **For Differential Expression Analysis (RNA-seq)**:
   ```bash
